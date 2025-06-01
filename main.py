@@ -5,7 +5,6 @@ from io import BytesIO
 st.set_page_config(page_title="Pivot Sheet1 → Sheet2", layout="wide")
 st.title("🔄 Chuyển Sheet1 (long) sang Sheet2 (wide)")
 
-
 uploaded_file = st.file_uploader(
     "📂 Tải lên file Excel có Sheet1 (refYear, partnerDesc, cmdCode, fobvalue)", 
     type=["xlsx", "xls"]
@@ -13,29 +12,29 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file:
     try:
-       
         df_long = pd.read_excel(uploaded_file, sheet_name=0)
         st.subheader("📄 Dữ liệu gốc (Sheet1)")
         st.dataframe(df_long)
 
-        
         required = {"refYear", "partnerDesc", "cmdCode", "fobvalue"}
         if not required.issubset(df_long.columns):
             st.error(f"❌ Sheet1 phải chứa cột: {required}")
         else:
-        
+            # 🔍 Lọc theo năm mong muốn
+            selected_years = [2007, 2010, 2012, 2016, 2018, 2023]
+            df_long = df_long[df_long["refYear"].isin(selected_years)]
+
             df_wide = (
                 df_long
                 .pivot_table(
                     index=["partnerDesc", "refYear"],
                     columns="cmdCode",
                     values="fobvalue",
-                    aggfunc="sum"          
+                    aggfunc="sum"
                 )
                 .reset_index()
             )
 
-    
             df_wide = df_wide.rename(columns={
                 "partnerDesc": "Country",
                 "refYear":    "Year"
