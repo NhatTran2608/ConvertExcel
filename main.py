@@ -21,7 +21,7 @@ if uploaded_file:
             st.error(f"❌ Sheet1 phải chứa cột: {required}")
         else:
             # 🔍 Lọc theo năm mong muốn
-            selected_years = [2007, 2010, 2012, 2016, 2018, 2023]
+            selected_years = [2007, 2010, 2012, 2014,2016, 2018, 2023]
             df_long = df_long[df_long["refYear"].isin(selected_years)]
 
             df_wide = (
